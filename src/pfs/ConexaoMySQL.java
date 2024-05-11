@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 
 public class ConexaoMySQL {
-	public static String status = "Não conectou...";
+	public static String status = Server.getTimeStamp() + "[MySQL]  Not connected to database!";
 	public static Connection connection;
 	
 	public ConexaoMySQL() {
@@ -26,17 +26,16 @@ public class ConexaoMySQL {
 			String password = "";
 			connection = DriverManager.getConnection(url, username, password);
 			if (connection != null) {
-				status = ("STATUS--->Conectado com sucesso!");
+				status = (Server.getTimeStamp() + "[MySQL] Connected to database!");
 			} else {
-				status = ("STATUS--->Não foi possivel realizar conexão");
+				status = (Server.getTimeStamp() + "[MySQL] Can't connect to database");
 			}
 			return connection;
-		} catch (ClassNotFoundException e) {  //Driver não encontrado
-			System.out.println("O driver expecificado nao foi encontrado.");
+		} catch (ClassNotFoundException e) {
+			System.out.println(Server.getTimeStamp() + "[MySQL] Driver not Found!");
 			return null;
 		} catch (SQLException e) {
-			//Não conseguindo se conectar ao banco
-			System.out.println("Nao foi possivel conectar ao Banco de Dados.");
+			System.out.println(Server.getTimeStamp() + "[MySQL] Can't connect to database.");
 			return null;
 		}
 	}

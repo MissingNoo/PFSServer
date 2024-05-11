@@ -33,6 +33,7 @@ public class User implements Runnable {
         this.x = 0;
         this.y = 0;
         this.uid = idd;
+        this.loggedin = false;
     }
 
     @Override
@@ -73,12 +74,13 @@ public class User implements Runnable {
                             case ChangeRoom:
                                 this.lastroom = this.room;
                                 this.room = json.get("room").toString();
-                                System.out.println(LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + ":" + LocalDateTime.now().getSecond() + "> " + this.name + " joined room: " + this.room);
+                                System.out.println(getTimeStamp() + this.name + " joined room: " + this.room);
                                 Server.updateUser(this);
                                 Server.getRoom(this);
                                 break;
                             case Ping:
                                 System.out.println("Ping");
+                                System.out.println(json.toString());
                                 try {
                                     OutputStream out = channel.socket().getOutputStream();
                                     String str = "Pong\n";
@@ -101,7 +103,7 @@ public class User implements Runnable {
                                 String username = json.get("username").toString();
                                 String password = json.get("password").toString();
                                 if (ConexaoMySQL.login(username, password)) {
-                                    loggedin = true;
+                                    this.loggedin = true;
                                     String characters = ConexaoMySQL.getCharacters(username);
                                     Server.sendData(this, "{\"type\" : 6, \"characters\" : \"" + characters + "\"}");
                                 }
@@ -110,6 +112,8 @@ public class User implements Runnable {
                                 this.name = json.get("name").toString();
                                 break;
                             case Null:
+                                break;
+                            default:
                                 break;
                         }
                     }catch (JSONException err){
@@ -147,5 +151,9 @@ public class User implements Runnable {
             case 7: r = Server.Contype.SelectCharacter; break;
         }
         return r;
+    }
+
+    private String getTimeStamp(){
+        return LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + ":" + LocalDateTime.now().getSecond()  + "> ";
     }
 }

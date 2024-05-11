@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.*;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Server {
         Server.clients = new ArrayList<User>();
         this.running = false;
 
-        System.out.print("Trying to Listen on Port : " + port + "...");
+        System.out.print(getTimeStamp() + "[Server] Trying to Listen on Port : " + port + "...");
         try {
             ServerSocketChannel channel = ServerSocketChannel.open();
             channel.socket().bind(new java.net.InetSocketAddress(port));
@@ -124,8 +125,29 @@ public class Server {
         }
     }
 
+    public static String getTimeStamp(){
+        int hour = LocalDateTime.now().getHour();
+        int minute = LocalDateTime.now().getMinute();
+        int second = LocalDateTime.now().getSecond();
+        String hourstring = String.valueOf(hour);
+        if (hour < 9) {
+            hourstring = "0" + String.valueOf(hour);
+        }
+        String minutestring = String.valueOf(minute);
+        if (minute < 9) {
+            minutestring = "0" + String.valueOf(minute);
+        }
+        String secondstring = String.valueOf(second);
+        if (second < 9) {
+            secondstring = "0" + String.valueOf(second);
+        }
+        return "[" + hourstring + ":" + minutestring + ":" + secondstring + "] ";
+    }
+
     public static void main(String... args) {
-    	System.out.println(ConexaoMySQL.statusConection());
+        for (int i = 0; i < 30; i++) {
+            System.out.println();
+        }
     	ConexaoMySQL.getConexaoMySQL();
     	System.out.println(ConexaoMySQL.statusConection());        
     	new Server(21337); 
