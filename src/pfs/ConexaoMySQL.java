@@ -65,26 +65,37 @@ public class ConexaoMySQL {
 	static Statement stmt = null;
 	static ResultSet rs = null;
 	
-	public static String getRow() {
-		try {
-		    stmt = connection.createStatement();
-		    rs = stmt.executeQuery("SELECT foo FROM bar");
-
-		    // or alternatively, if you don't know ahead of time that
-		    // the query will be a SELECT...
-
-		    if (stmt.execute("SELECT foo FROM bar")) {
-		        rs = stmt.getResultSet();
-		    }
-
-		    // Now do something with the ResultSet ....
+	public static boolean login(String usr, String password) {
+		boolean loggedin = false;
+		String query = "SELECT * FROM accounts WHERE user = \"" + usr + "\"";
+		try (Statement stmt = connection.createStatement()) {
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+			  	String pass = rs.getString("password");
+				if (pass.toString().compareTo(password.toString()) == 0) {
+					loggedin = true;
+				}
+				else {
+					
+				}
+			}
 		}
 		catch (SQLException ex){
-		    // handle any errors
-		    System.out.println("SQLException: " + ex.getMessage());
-		    System.out.println("SQLState: " + ex.getSQLState());
-		    System.out.println("VendorError: " + ex.getErrorCode());
 		}
-		return "";
+		return loggedin;
+	}
+
+	public static String getCharacters(String username){
+		String characters = "";
+		String query = "SELECT characters FROM accounts WHERE user = \"" + username + "\"";
+		try (Statement stmt = connection.createStatement()) {
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+			  	characters = rs.getString("characters");
+			}
+		}
+		catch (SQLException ex){
+		}
+		return characters;
 	}
 }

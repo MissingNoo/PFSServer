@@ -21,6 +21,7 @@ public class User implements Runnable {
     public String lastroom;
     public float x;
     public float y;
+    private boolean loggedin;
 
     ByteBuffer wBuffer = ByteBuffer.allocate(4096);
 
@@ -51,7 +52,6 @@ public class User implements Runnable {
                         }
                         switch (getMessageContype(Integer.parseInt(json.get("type").toString()))) {
                             case Join:
-                                this.name = json.get("name").toString();
                                 this.room = json.get("room").toString();
                                 this.lastroom = this.room;
                                 try {
@@ -97,6 +97,18 @@ public class User implements Runnable {
                                     ex1.printStackTrace();
                                 }
                                 break;
+                            case Login:
+                                String username = json.get("username").toString();
+                                String password = json.get("password").toString();
+                                if (ConexaoMySQL.login(username, password)) {
+                                    loggedin = true;
+                                    String characters = ConexaoMySQL.getCharacters(username);
+                                    Server.sendData(this, "{\"type\" : 6, \"characters\" : \"" + characters + "\"}");
+                                }
+                                break;
+                            case SelectCharacter:
+                                this.name = json.get("name").toString();
+                                break;
                             case Null:
                                 break;
                         }
@@ -130,6 +142,9 @@ public class User implements Runnable {
             case 2: r = Server.Contype.ChangeRoom; break;
             case 3: r = Server.Contype.Ping; break;
             case 4: r = Server.Contype.Disconnect; break;
+            case 5: r = Server.Contype.Login; break;
+            case 6: r = Server.Contype.GetCharacters; break;
+            case 7: r = Server.Contype.SelectCharacter; break;
         }
         return r;
     }

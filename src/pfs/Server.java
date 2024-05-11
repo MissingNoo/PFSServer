@@ -14,6 +14,9 @@ public class Server {
         ChangeRoom,
         Ping,
         Disconnect,
+        Login,
+        GetCharacters,
+	    SelectCharacter,
         Null
     }
 
@@ -108,10 +111,23 @@ public class Server {
         }
     }
 
+    public static void sendData(User user, String data){
+        try {
+            data = data + ";";
+            OutputStream out = user.channel.socket().getOutputStream();
+            BufferedOutputStream bout = new BufferedOutputStream(out);
+            byte buf[] = data.getBytes();
+            bout.flush();
+            bout.write(buf);
+            bout.flush();
+        } catch (IOException e) {
+        }
+    }
+
     public static void main(String... args) {
     	System.out.println(ConexaoMySQL.statusConection());
     	ConexaoMySQL.getConexaoMySQL();
-    	System.out.println(ConexaoMySQL.statusConection());
+    	System.out.println(ConexaoMySQL.statusConection());        
     	new Server(21337); 
     }
 
