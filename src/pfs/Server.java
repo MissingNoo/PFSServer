@@ -79,7 +79,7 @@ public class Server {
                 if (user.getuid() != joined.getuid() && (user.room.compareToIgnoreCase(joined.room) == 0 || user.room.compareToIgnoreCase(joined.lastroom) == 0)) {
                     OutputStream out = user.channel.socket().getOutputStream();
                     BufferedOutputStream bout = new BufferedOutputStream(out);
-                    String str = "{\"type\" : 1, \"name\" :\"" + joined.name + "\", \"x\" : " + joined.x + ", \"y\" : " + joined.y + ", \"uid\" : " + joined.getuid() + ", \"room\" : \"" + joined.room + "\"};\n";
+                    String str = "{\"type\" : \"1\", \"name\" : \"" + joined.name + "\", \"x\" : \"" + joined.x + "\", \"y\" : \"" + joined.y + "\", \"uid\" : \"" + joined.getuid() + "\", \"room\" : \"" + joined.room + "\"};\n";
                     byte buf[] = str.getBytes();
                     bout.flush();
                     bout.write(buf);
@@ -101,7 +101,7 @@ public class Server {
                 if (user.getuid() == usr.getuid()) {
                     continue;
                 }
-                String str = "{\"type\" : 1, \"name\" :\"" + user.name + "\", \"x\" : " + user.x + ", \"y\" : " + user.y + ", \"uid\" : " + user.getuid() + ", \"room\" : \"" + user.room + "\"};\n";
+                String str = "{\"type\" : \"1\", \"name\" :\"" + user.name + "\", \"x\" : \"" + user.x + "\", \"y\" : \"" + user.y + "\", \"uid\" : \"" + user.getuid() + "\", \"room\" : \"" + user.room + "\"};\n";
                 byte buf[] = str.getBytes();
                 bout.flush();
                 bout.write(buf);
